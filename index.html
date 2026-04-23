@@ -1,0 +1,357 @@
+<!--
+  Fabula Ultima Character Sheet
+  Autore: VampireNeko
+  Licenza: Creative Commons BY-NC-SA 4.0
+  https://creativecommons.org/licenses/by-nc-sa/4.0/
+-->
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Fabula Ultima — Scheda Personaggio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;900&family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,300;1,400&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<!-- ============================================================
+     BARRA SUPERIORE
+     ============================================================ -->
+<header class="topbar">
+  <div class="topbar__logo">Fabula Ultima <span>— Scheda</span></div>
+
+  <div style="display:flex; align-items:center; gap:8px; flex:1; justify-content:center; overflow-x:auto;">
+    <div class="char-tabs" id="charTabs"></div>
+    <button class="btn btn--icon" id="btnAddChar" title="Nuovo personaggio">＋</button>
+  </div>
+
+  <div class="topbar__actions">
+    <span class="save-indicator" id="saveIndicator">Pronto</span>
+    <button class="btn" id="btnExport">↑ Esporta</button>
+    <label class="filebtn">↓ Importa <input type="file" id="fileImport" accept=".json,.txt" /></label>
+    <button class="btn btn--icon" id="btnTheme" title="Tema chiaro/scuro">☾</button>
+    <button class="btn btn--danger btn--icon" id="btnNew" title="Nuova scheda">✕</button>
+  </div>
+</header>
+
+<!-- ============================================================
+     FOGLIO PRINCIPALE
+     ============================================================ -->
+<main class="app">
+  <div class="sheet-grid">
+
+    <!-- ======================================================
+         COLONNA SINISTRA
+         ====================================================== -->
+    <div class="col col-left">
+
+      <!-- HERO HEADER -->
+      <div class="hero-header card" style="padding:0;">
+        <div class="hero-portrait-wrap" id="portraitWrap">
+          <img class="hero-portrait-img" id="portraitImg" alt="Ritratto" />
+          <div class="hero-portrait-placeholder">
+            <div class="icon">⚔</div>
+            <div>Clicca per URL ritratto</div>
+          </div>
+          <input class="portrait-url-input" id="portraitUrl" type="url" placeholder="https://..." data-key="portraitUrl" />
+        </div>
+
+        <div class="hero-body">
+          <div class="hero-name-row">
+            <div class="hero-name-col">
+              <div class="field-label">Nome</div>
+              <input class="field-input name-input" data-key="name" type="text" placeholder="Il tuo eroe…" />
+            </div>
+            <div class="level-badge">
+              <div class="level-badge__label">Lv</div>
+              <input type="number" data-key="level" min="1" max="50" value="5" />
+            </div>
+          </div>
+
+          <div class="hero-traits">
+            <div class="field trait-full">
+              <div class="field-label">Identità</div>
+              <input class="field-input" data-key="identity" type="text" placeholder="Es. Cavaliere Reale…" />
+            </div>
+            <div class="field trait-full">
+              <div class="field-label">Tema</div>
+              <input class="field-input" data-key="theme" type="text" placeholder="Es. Speranza…" />
+            </div>
+            <div class="field trait-full">
+              <div class="field-label">Origine</div>
+              <input class="field-input" data-key="origin" type="text" placeholder="Es. Platea…" />
+            </div>
+          </div>
+
+          <div class="fabula-row">
+            <svg class="fabula-feather" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M20.24 12.24a6 6 0 0 0-8.49-8.49L5 10.5V19h8.5l6.74-6.76z" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+              <path d="M16 8L2 22" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+              <path d="M17.5 15H9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            </svg>
+            <div class="fabula-label">Punti Fabula</div>
+            <div class="fabula-pills" id="fabulaPills"></div>
+            <button class="fp-add" id="btnAddFP" title="Aggiungi Punto Fabula">+</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- EQUIPAGGIAMENTO -->
+      <div class="card">
+        <div class="card__title">Equipaggiamento</div>
+        <div class="equip-grid">
+
+          <div class="equip-row">
+            <div class="equip-row-top">
+              <div class="equip-slot-label"><span class="slot-icon">⚔</span>Mano Princ.</div>
+              <input class="equip-item-input" data-key="equipment.mainHand.item" type="text" placeholder="Es. Stocco…" />
+            </div>
+            <textarea class="equip-stats" data-key="equipment.mainHand.desc" placeholder="Es. DES+INT+1 / TM+6 / Fisico"></textarea>
+          </div>
+
+          <div class="equip-row">
+            <div class="equip-row-top">
+              <div class="equip-slot-label"><span class="slot-icon">🛡</span>Mano Sec.</div>
+              <input class="equip-item-input" data-key="equipment.offHand.item" type="text" placeholder="Es. Scudo Runico…" />
+            </div>
+            <textarea class="equip-stats" data-key="equipment.offHand.desc" placeholder="Es. +2 DIF +2 M.DIF"></textarea>
+          </div>
+
+          <div class="equip-row">
+            <div class="equip-row-top">
+              <div class="equip-slot-label"><span class="slot-icon">🧥</span>Armatura</div>
+              <input class="equip-item-input" data-key="equipment.armor.item" type="text" placeholder="Es. Corazza di Bronzo…" />
+            </div>
+            <textarea class="equip-stats" data-key="equipment.armor.desc" placeholder="Es. DIF 11 / −3 Iniz."></textarea>
+          </div>
+
+          <div class="equip-row">
+            <div class="equip-row-top">
+              <div class="equip-slot-label"><span class="slot-icon">💍</span>Accessorio</div>
+              <input class="equip-item-input" data-key="equipment.accessory.item" type="text" placeholder="Es. Elmo Crestato…" />
+            </div>
+            <textarea class="equip-stats" data-key="equipment.accessory.desc" placeholder="Es. +1 Precisione"></textarea>
+          </div>
+
+          <div class="equip-row">
+            <div class="equip-row-top">
+              <div class="equip-slot-label"><span class="slot-icon">🎒</span>Extra</div>
+              <input class="equip-item-input" data-key="equipment.extra.item" type="text" placeholder="Oggetto extra…" />
+            </div>
+            <textarea class="equip-stats" data-key="equipment.extra.desc" placeholder="Note…"></textarea>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- ZAINO & NOTE -->
+      <div class="card">
+        <div class="card__title">Zaino & Note</div>
+        <div class="md-wrap" data-md-key="backpackNotes">
+          <div class="md-toolbar"></div>
+          <textarea class="notes-textarea" data-key="backpackNotes" placeholder="Oggetti, note di campagna, segreti…"></textarea>
+          <div class="md-preview"></div>
+        </div>
+        <div class="zenit-row">
+          <span class="zenit-icon">🪙</span>
+          <div class="field-label" style="white-space:nowrap;flex-shrink:0;">Zenit</div>
+          <input class="zenit-input" type="number" data-key="zenit" value="0" min="0" />
+        </div>
+      </div>
+
+      <!-- LEGAMI -->
+      <div class="card">
+        <div class="card__title">
+          Legami
+          <button class="collapse-btn" data-target="bondsBody">▾</button>
+        </div>
+        <div class="collapsible" id="bondsBody">
+          <div id="bondsList"></div>
+          <button class="btn" id="btnAddBond" style="width:100%; margin-top:8px; justify-content:center;">
+            + Aggiungi Legame
+          </button>
+          <div style="font-size:12px; color:var(--ink-faint); margin-top:6px; text-align:center;">
+            Tieni premuto 🗑 per eliminare
+          </div>
+        </div>
+      </div>
+
+      <!-- NOTE CAMPAGNA -->
+      <div class="card">
+        <div class="card__title">Note Campagna</div>
+        <div class="md-wrap" data-md-key="campaignNotes">
+          <div class="md-toolbar"></div>
+          <textarea class="notes-textarea" data-key="campaignNotes" placeholder="Segreti, indizi, PNG importanti…" style="min-height:160px;"></textarea>
+          <div class="md-preview"></div>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- ======================================================
+         COLONNA CENTRALE
+         ====================================================== -->
+    <div class="col col-mid">
+
+      <!-- DIFESE & INIZIATIVA -->
+      <div class="card">
+        <div class="card__title">Difese & Iniziativa</div>
+        <div class="defense-row">
+          <div class="defense-box">
+            <div class="field-label">Iniziativa</div>
+            <input type="number" data-key="initiative" value="0" />
+          </div>
+          <div class="defense-box">
+            <div class="field-label">Difesa</div>
+            <input type="number" data-key="defense" value="8" />
+          </div>
+          <div class="defense-box">
+            <div class="field-label">Dif. Magica</div>
+            <input type="number" data-key="magicDefense" value="8" />
+          </div>
+        </div>
+      </div>
+
+      <!-- HP / MP / IP -->
+      <div class="card">
+        <div class="card__title">Risorse</div>
+        <div class="resource-section">
+
+          <!-- HP -->
+          <div class="resource-bar">
+            <div class="resource-bar__header">
+              <div class="resource-bar__label hp">❤ Punti Vita</div>
+              <div class="resource-bar__value" id="hpValue" title="Clicca per modificare max">0 / 0</div>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill hp" id="hpFill" style="width:0%"></div>
+              <input class="bar-slider" type="range" id="hpSlider" min="0" max="0" value="0" />
+            </div>
+            <div class="resource-controls">
+              <button class="res-btn hp-btn" data-res="hp" data-sign="-1">−</button>
+              <input class="res-delta" type="number" id="hpDelta" value="1" min="1" />
+              <button class="res-btn hp-btn" data-res="hp" data-sign="1">+</button>
+            </div>
+          </div>
+
+          <!-- MP -->
+          <div class="resource-bar">
+            <div class="resource-bar__header">
+              <div class="resource-bar__label mp">✦ Punti Mente</div>
+              <div class="resource-bar__value" id="mpValue" title="Clicca per modificare max">0 / 0</div>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill mp" id="mpFill" style="width:0%"></div>
+              <input class="bar-slider" type="range" id="mpSlider" min="0" max="0" value="0" />
+            </div>
+            <div class="resource-controls">
+              <button class="res-btn mp-btn" data-res="mp" data-sign="-1">−</button>
+              <input class="res-delta" type="number" id="mpDelta" value="1" min="1" />
+              <button class="res-btn mp-btn" data-res="mp" data-sign="1">+</button>
+            </div>
+          </div>
+
+          <!-- IP -->
+          <div class="ip-row">
+            <div class="resource-bar__label ip">◈ IP</div>
+            <div>
+              <div class="field-label" style="text-align:center;">Max</div>
+              <input class="ip-input" type="number" data-key="points.ip.max" value="6" min="0" max="20" />
+            </div>
+            <div>
+              <div class="field-label" style="text-align:center;">Attuale</div>
+              <input class="ip-input" type="number" data-key="points.ip.current" value="6" min="0" max="20" />
+            </div>
+          </div>
+
+          <!-- Pozioni: icone SVG caricate da JS per evitare duplicazione HTML -->
+          <div class="potion-row" id="potionRow"></div>
+
+        </div>
+      </div>
+
+      <!-- ATTRIBUTI + STATUS -->
+      <div class="card">
+        <div class="card__title">Attributi</div>
+        <div class="attr-grid" id="attrGrid">
+          <!-- filled by JS -->
+        </div>
+        <div style="margin-top:14px;">
+          <div class="card__title" style="margin-bottom:10px;">Status</div>
+          <div class="status-row" id="statusRow">
+            <!-- filled by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- CLASSI -->
+      <div class="card">
+        <div class="card__title">
+          Classi
+          <button class="collapse-btn" data-target="classesBody">▾</button>
+        </div>
+        <div class="collapsible" id="classesBody">
+          <div id="classesList">
+            <!-- filled by JS -->
+          </div>
+        </div>
+      </div>
+
+      <!-- OROLOGI -->
+      <div class="card">
+        <div class="card__title">
+          Orologi
+          <button class="collapse-btn" data-target="clocksBody">▾</button>
+        </div>
+        <div class="collapsible" id="clocksBody">
+          <div id="clocksList"></div>
+          <button class="btn" id="btnAddClock" style="width:100%; margin-top:8px; justify-content:center;">
+            + Nuovo Orologio
+          </button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+</main>
+
+<!-- ============================================================
+     MODAL (inline edit HP/MP max)
+     ============================================================ -->
+<div class="modal-overlay" id="modalOverlay">
+  <div class="modal">
+    <div class="modal__title" id="modalTitle">Modifica</div>
+    <input class="modal__input" type="text" id="modalInput" placeholder="cur/max" />
+    <div class="modal__hint">Es. <strong>60/80</strong> per impostare 60 su 80 max</div>
+    <div class="modal__actions">
+      <button class="btn" id="modalCancel">Annulla</button>
+      <button class="btn btn--primary" id="modalConfirm">Conferma</button>
+    </div>
+  </div>
+</div>
+
+<!-- ============================================================
+     DIALOG DI CONFERMA
+     ============================================================ -->
+<div class="confirm-overlay" id="confirmOverlay">
+  <div class="confirm-box">
+    <h3 id="confirmTitle">Conferma</h3>
+    <p id="confirmMsg">Sei sicuro?</p>
+    <div class="confirm-actions">
+      <button class="btn" id="confirmNo">Annulla</button>
+      <button class="btn btn--danger" id="confirmYes">Conferma</button>
+    </div>
+  </div>
+</div>
+
+<!-- Toast container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<script src="app.js"></script>
+</body>
+</html>
